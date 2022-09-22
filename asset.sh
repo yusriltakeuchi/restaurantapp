@@ -1,0 +1,1 @@
+fluttergen -c pubspec.yaml
