@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
+import 'package:restaurantapp/core/models/review/create_review_model.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_local_service.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
 import 'package:restaurantapp/injector.dart';
+import 'package:restaurantapp/ui/widgets/dialog/snackbar_item.dart';
 
 class RestaurantProvider extends ChangeNotifier {
   ///=========================
@@ -142,6 +144,27 @@ class RestaurantProvider extends ChangeNotifier {
       _cities = [];
     } 
     setOnSearch(false);
+  }
+
+  void createReview(CreateReviewModel data) async {
+    try {
+      final result = await restaurantService.createReview(data);
+      if (result.error == false) {
+        _restaurant?.reviews = result.data;
+        showSnackbar(
+          title: "Successfully create new review",
+          color: Colors.green
+        );
+        notifyListeners();
+      }
+    } catch(e) {
+      debugPrint("Error: ${e.toString()}");
+      showSnackbar(
+        title: "Failed creating review",
+        color: Colors.red,
+        isError: true
+      );
+    } 
   }
 
   /// Set event search

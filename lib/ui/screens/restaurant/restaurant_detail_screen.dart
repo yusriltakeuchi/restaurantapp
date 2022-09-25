@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-
 import 'package:restaurantapp/core/models/category/category_model.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
+import 'package:restaurantapp/core/models/review/create_review_model.dart';
 import 'package:restaurantapp/core/models/review/review_model.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
@@ -14,10 +14,29 @@ import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
 import 'package:restaurantapp/ui/widgets/review/review_item.dart';
+import 'package:restaurantapp/ui/widgets/textfield/custom_textfield.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id;
   const RestaurantDetailScreen({
+    Key? key,
+    required this.id,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => RestaurantProvider(),
+      child: RestaurantInitDetailScreen(
+        id: id,
+      ),
+    );
+  }
+}
+
+class RestaurantInitDetailScreen extends StatelessWidget {
+  final String id;
+  const RestaurantInitDetailScreen({
     Key? key,
     required this.id,
   }) : super(key: key);
@@ -183,19 +202,45 @@ class RestaurantDetailContentBody extends StatelessWidget {
           ),
           _RestaurantDetailReviewWidget(
             reviews: restaurant.reviews,
-          )
+          ),
+          SizedBox(
+            height: deviceHeight * 0.1,
+          ),
         ],
       ),
     );
   }
 }
 
-class _RestaurantDetailReviewWidget extends StatelessWidget {
+class _RestaurantDetailReviewWidget extends StatefulWidget {
   final List<ReviewModel>? reviews;
   const _RestaurantDetailReviewWidget({
     Key? key,
     required this.reviews,
   }) : super(key: key);
+
+  @override
+  State<_RestaurantDetailReviewWidget> createState() =>
+      _RestaurantDetailReviewWidgetState();
+}
+
+class _RestaurantDetailReviewWidgetState
+    extends State<_RestaurantDetailReviewWidget> {
+  var reviewController = TextEditingController();
+  void sendReview() {
+    if (reviewController.text.isNotEmpty) {
+      final resturantProv = RestaurantProvider.instance(context);
+      resturantProv.createReview(
+        CreateReviewModel(
+          id: resturantProv.restaurant!.id,
+          name: "Yusril",
+          review: reviewController.text,
+        ),
+      );
+      reviewController.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -214,24 +259,65 @@ class _RestaurantDetailReviewWidget extends StatelessWidget {
           SizedBox(
             height: setHeight(20),
           ),
-          reviews!.isEmpty
-            ? IdleNoItemCenter(
-                title: "No review",
-                iconPathSVG: Assets.images.illustrationNotfound.path,
+          Row(
+            children: [
+              Expanded(
+                child: CustomTextField(
+                  controller: reviewController,
+                  autoFocus: false,
+                  hintText: "Write your review",
+                  onSubmit: (value) {},
+                ),
+              ),
+              SizedBox(
+                width: setWidth(30),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Material(
+                  type: MaterialType.transparency,
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => sendReview(),
+                    borderRadius: BorderRadius.circular(5),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: setWidth(35),
+                        vertical: setHeight(18),
+                      ),
+                      child: const Icon(
+                        Icons.send,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
               )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: reviews!.length,
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-
-                  final review = reviews?[index];
-                  return ReviewItem(
-                    review: review!
-                  );
-                },
-              )
+            ],
+          ),
+          SizedBox(
+            height: setHeight(40),
+          ),
+          widget.reviews!.isEmpty
+              ? IdleNoItemCenter(
+                  title: "No review",
+                  iconPathSVG: Assets.images.illustrationNotfound.path,
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.reviews!.length,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    final review = widget.reviews?[index];
+                    return ReviewItem(
+                      review: review!,
+                    );
+                  },
+                )
         ],
       ),
     );
@@ -494,7 +580,10 @@ class _RestaurantDetailInfoWidgetState
               ),
               Expanded(
                 child: Text(
-                  (widget.restaurant.address!.isNotEmpty ? "${widget.restaurant.address}, " : "") + widget.restaurant.city,
+                  (widget.restaurant.address!.isNotEmpty
+                          ? "${widget.restaurant.address}, "
+                          : "") +
+                      widget.restaurant.city,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: styleSubtitle.copyWith(

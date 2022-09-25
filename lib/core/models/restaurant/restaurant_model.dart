@@ -13,7 +13,7 @@ class RestaurantModel extends Serializable {
   final MenuModel? menus;
   final RestaurantImageModel? image;
   final List<CategoryModel>? categories;
-  final List<ReviewModel>? reviews;
+  List<ReviewModel>? reviews;
   
   RestaurantModel({
     required this.id,

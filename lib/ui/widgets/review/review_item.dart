@@ -13,7 +13,9 @@ class ReviewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: setHeight(30)),
+      padding: EdgeInsets.only(
+        bottom: setHeight(40),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -12,4 +12,5 @@ class Api {
   String getRestaurants = "$_baseServer/list";
   String getRestaurant = "$_baseServer/detail/:id";
   String searchRestaurant = "$_baseServer/search";
+  String createReview = "$_baseServer/review";
 }

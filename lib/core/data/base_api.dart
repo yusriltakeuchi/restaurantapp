@@ -25,6 +25,7 @@ class BaseAPI implements BaseAPIImpl {
   Options _getHeaders({bool? useToken}) {
     var header = <String, dynamic>{};
     header['Accept'] = 'application/json';
+    header['Content-Type'] = 'application/json';
     if (useToken == true) {
       header['Authorization'] = 'Bearer <token>';
     }
