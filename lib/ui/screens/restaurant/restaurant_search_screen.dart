@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
@@ -34,6 +35,12 @@ class _RestaurantInitSearchScreenState
     extends State<RestaurantInitSearchScreen> {
   var searchController = TextEditingController();
 
+  void refreshHome() {
+    final restaurantProv = RestaurantProvider.instance(context);
+    restaurantProv.search(restaurantProv.latestKeyword ?? "");
+    ConnectionProvider.instance(context).setConnection(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +53,21 @@ class _RestaurantInitSearchScreenState
           color: Colors.white,
         ),
       ),
-      body: const RestaurantSearchBody(),
+      body: Consumer<ConnectionProvider>(
+        builder: (context, connectionProv, _) {
+
+          if (connectionProv.internetConnected == false) {
+            return IdleNoItemCenter(
+              title: "No internet connection,\nplease check your wifi or mobile data",
+              iconPathSVG: Assets.images.illustrationNoConnection.path,
+              buttonText: "Retry Again",
+              onClickButton: () => refreshHome(),
+            );
+          }
+
+          return const RestaurantSearchBody();
+        },
+      ),
     );
   }
 

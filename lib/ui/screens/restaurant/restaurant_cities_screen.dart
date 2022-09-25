@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
+import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/router/route_list.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
@@ -50,10 +52,26 @@ class RestaurantCitiesBody extends StatelessWidget {
     required this.city,
   }) : super(key: key);
 
+  void refreshHome(BuildContext context) {
+    final restaurantProv = RestaurantProvider.instance(context);
+    restaurantProv.clearRestaurantByCity();
+    ConnectionProvider.instance(context).setConnection(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<RestaurantProvider>(
-      builder: (context, restaurantProv, _) {
+    return Consumer2<RestaurantProvider, ConnectionProvider>(
+      builder: (context, restaurantProv, connectionProv, _) {
+
+        if (connectionProv.internetConnected == false) {
+          return IdleNoItemCenter(
+            title: "No internet connection,\nplease check your wifi or mobile data",
+            iconPathSVG: Assets.images.illustrationNoConnection.path,
+            buttonText: "Retry Again",
+            onClickButton: () => refreshHome(context),
+          );
+        }
+
         if (restaurantProv.restaurantsByCity == null &&
             !restaurantProv.onSearch) {
           restaurantProv.getRestaurantsByCity(city);
@@ -66,8 +84,9 @@ class RestaurantCitiesBody extends StatelessWidget {
         }
 
         if (restaurantProv.restaurantsByCity!.isEmpty) {
-          return const IdleNoItemCenter(
+          return IdleNoItemCenter(
             title: "Restaurant not found",
+            iconPathSVG: Assets.images.illustrationNotfound.path,
           );
         }
 

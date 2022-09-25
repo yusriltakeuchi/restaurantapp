@@ -28,6 +28,10 @@ class RestaurantProvider extends ChangeNotifier {
   List<RestaurantModel>? _restaurantsByCity;
   List<RestaurantModel>? get restaurantsByCity => _restaurantsByCity;
 
+  /// Save latest keyword
+  String? _latestKeyword;
+  String? get latestKeyword => _latestKeyword;
+
   /// List of city 
   List<String>? _cities;
   List<String>? get cities => _cities;
@@ -97,6 +101,7 @@ class RestaurantProvider extends ChangeNotifier {
     } else {
       await Future.delayed(const Duration(milliseconds: 100));
       setOnSearch(true);
+      _latestKeyword = keyword;
       try {
         final result = await restaurantService.searchRestaurants(keyword);
         if (result.error == false) {
@@ -165,6 +170,21 @@ class RestaurantProvider extends ChangeNotifier {
         isError: true
       );
     } 
+  }
+
+  void clearRestaurants() {
+    _restaurants = null;
+    notifyListeners();
+  }
+
+  void clearCities() {
+    _cities = null;
+    notifyListeners();
+  }
+
+  void clearRestaurantByCity() {
+    _restaurantsByCity = null;
+    notifyListeners();
   }
 
   /// Set event search

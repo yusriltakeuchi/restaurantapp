@@ -37,7 +37,6 @@ dependencies:
   flutter_screenutil: ^5.5.4
   flutter_svg: ^1.1.5
   get_it: ^7.2.0
-  pretty_dio_logger: ^1.1.1
   provider: ^6.0.3
 
 dev_dependencies:

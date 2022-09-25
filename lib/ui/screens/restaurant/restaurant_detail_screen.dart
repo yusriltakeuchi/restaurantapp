@@ -7,6 +7,7 @@ import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/core/models/review/create_review_model.dart';
 import 'package:restaurantapp/core/models/review/review_model.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/gen/fonts.gen.dart';
@@ -40,34 +41,48 @@ class RestaurantInitDetailScreen extends StatelessWidget {
     Key? key,
     required this.id,
   }) : super(key: key);
+
+  void refreshHome(BuildContext context) {
+    final restaurantProv = RestaurantProvider.instance(context);
+    restaurantProv.getRestaurant(id);
+    ConnectionProvider.instance(context).setConnection(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => RestaurantProvider(),
-      child: Scaffold(
-        body: Consumer<RestaurantProvider>(
-          builder: (context, restaurantProv, _) {
-            if (restaurantProv.restaurant == null && !restaurantProv.onSearch) {
-              restaurantProv.getRestaurant(id);
-              return const IdleLoadingCenter();
-            }
+    return Scaffold(
+      body: Consumer2<RestaurantProvider, ConnectionProvider>(
+        builder: (context, restaurantProv, connectionProv, _) {
 
-            if (restaurantProv.restaurant == null && restaurantProv.onSearch) {
-              return const IdleLoadingCenter();
-            }
-
-            if (restaurantProv.restaurant!.id.isEmpty) {
-              return IdleNoItemCenter(
-                title: "Restaurant not found",
-                iconPathSVG: Assets.images.illustrationNotfound.path,
-              );
-            }
-
-            return RestaurantDetailSliverBody(
-              restaurant: restaurantProv.restaurant!,
+          if (connectionProv.internetConnected == false) {
+            return IdleNoItemCenter(
+              title: "No internet connection,\nplease check your wifi or mobile data",
+              iconPathSVG: Assets.images.illustrationNoConnection.path,
+              buttonText: "Retry Again",
+              onClickButton: () => refreshHome(context),
             );
-          },
-        ),
+          }
+          
+          if (restaurantProv.restaurant == null && !restaurantProv.onSearch) {
+            restaurantProv.getRestaurant(id);
+            return const IdleLoadingCenter();
+          }
+
+          if (restaurantProv.restaurant == null && restaurantProv.onSearch) {
+            return const IdleLoadingCenter();
+          }
+
+          if (restaurantProv.restaurant!.id.isEmpty) {
+            return IdleNoItemCenter(
+              title: "Restaurant not found",
+              iconPathSVG: Assets.images.illustrationNotfound.path,
+            );
+          }
+
+          return RestaurantDetailSliverBody(
+            restaurant: restaurantProv.restaurant!,
+          );
+        },
       ),
     );
   }

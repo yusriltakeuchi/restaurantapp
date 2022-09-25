@@ -24,13 +24,17 @@ class $AssetsIconsGen {
   /// File path: assets/icons/icon_food.svg
   SvgGenImage get iconFood => const SvgGenImage('assets/icons/icon_food.svg');
 
-  /// File path: assets/icons/logo_restaurant.svg
-  SvgGenImage get logoRestaurant =>
-      const SvgGenImage('assets/icons/logo_restaurant.svg');
+  /// File path: assets/icons/logo_restaurant.png
+  AssetGenImage get logoRestaurant =>
+      const AssetGenImage('assets/icons/logo_restaurant.png');
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/illustration_no_connection.svg
+  SvgGenImage get illustrationNoConnection =>
+      const SvgGenImage('assets/images/illustration_no_connection.svg');
 
   /// File path: assets/images/illustration_notfound.svg
   SvgGenImage get illustrationNotfound =>

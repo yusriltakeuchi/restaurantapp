@@ -1,8 +1,12 @@
 
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:restaurantapp/core/data/api.dart';
 import 'package:restaurantapp/core/data/base_api_impl.dart';
 import 'package:restaurantapp/core/models/api/api_response.dart';
+import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
 import 'package:restaurantapp/injector.dart';
 
 class BaseAPI implements BaseAPIImpl {
@@ -12,15 +16,6 @@ class BaseAPI implements BaseAPIImpl {
   /// Initialize constructors
   BaseAPI() {
     _dio = Dio();
-    /// Show api logger in debug mode
-    // if (kDebugMode) {
-    //   _dio?.interceptors.add(
-    //     PrettyDioLogger(
-    //       requestBody: true,
-    //       requestHeader: true,
-    //     ),
-    //   );
-    // }
   }
   Options _getHeaders({bool? useToken}) {
     var header = <String, dynamic>{};
@@ -60,6 +55,11 @@ class BaseAPI implements BaseAPIImpl {
       );
       return _parseResponse(result);
     } on DioError catch(e) {
+      if (e.error is SocketException) {
+        ConnectionProvider.instance(navigate.navigatorKey.currentContext!).setConnection(false);
+      } else {
+        ConnectionProvider.instance(navigate.navigatorKey.currentContext!).setConnection(true);
+      }
       return APIResponse.failure(e.response?.statusCode ?? 500);
     }
   }

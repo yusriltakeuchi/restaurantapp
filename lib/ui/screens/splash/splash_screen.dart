@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
             AnimatedOpacity(
               opacity: opacityLogo,
               duration: const Duration(milliseconds: 300),
-              child: Assets.icons.logoRestaurant.svg(
+              child: Assets.icons.logoRestaurant.image(
                 width: deviceWidth * 0.4,
                 height: setHeight(400),
                 color: primaryColor,

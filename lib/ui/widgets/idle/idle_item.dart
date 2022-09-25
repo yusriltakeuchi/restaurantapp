@@ -24,6 +24,8 @@ class IdleNoItemCenter extends StatelessWidget {
   final String? iconPathSVG;
   final bool? useCenterText;
   final double? paddingTop;
+  final String? buttonText;
+  final VoidCallback? onClickButton;
 
   const IdleNoItemCenter({
     Key? key,
@@ -33,6 +35,8 @@ class IdleNoItemCenter extends StatelessWidget {
     this.iconPathSVG,
     this.useCenterText = true,
     this.paddingTop = 0,
+    this.buttonText,
+    this.onClickButton
   }) : super(key: key);
 
   @override
@@ -80,7 +84,39 @@ class IdleNoItemCenter extends StatelessWidget {
                     color: color ?? blackColor,
                     fontSize: setFontSize(40),
                   ),
-                )
+                ),
+                buttonText != null
+                  ? Container(
+                      margin: EdgeInsets.only(
+                        top: setHeight(20)
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: primaryColor
+                      ),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => onClickButton!(),
+                          borderRadius: BorderRadius.circular(5),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: setWidth(40),
+                              vertical: setHeight(20)
+                            ),
+                            child: Text(
+                              buttonText ?? "",
+                              style: styleTitle.copyWith(
+                                fontSize: setFontSize(40),
+                                color: Colors.white
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox()
               ],
             ),
     );

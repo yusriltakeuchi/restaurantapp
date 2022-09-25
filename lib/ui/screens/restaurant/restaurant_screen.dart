@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
+import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/router/route_list.dart';
 import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
@@ -44,30 +46,54 @@ class RestaurantScreen extends StatelessWidget {
 class RestaurantBody extends StatelessWidget {
   const RestaurantBody({super.key});
 
+  Future<void> refreshHome(BuildContext context) async {
+    final restaurantProv = RestaurantProvider.instance(context);
+    restaurantProv.clearCities();
+    restaurantProv.clearRestaurants();
+    ConnectionProvider.instance(context).setConnection(true);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: setHeight(30),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _CitiesListWidget(),
-            Padding(
+    return Consumer<ConnectionProvider>(
+      builder: (context, connectionProv, _) {
+
+        if (connectionProv.internetConnected == false) {
+          return IdleNoItemCenter(
+            title: "No internet connection,\nplease check your wifi or mobile data",
+            iconPathSVG: Assets.images.illustrationNoConnection.path,
+            buttonText: "Retry Again",
+            onClickButton: () => refreshHome(context),
+          );
+        }
+
+        return RefreshIndicator(
+          onRefresh: () => refreshHome(context),
+          child: SingleChildScrollView(
+            child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: setWidth(40),
+                vertical: setHeight(30),
               ),
-              child: Divider(
-                color: blackColor.withOpacity(0.4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _CitiesListWidget(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: setWidth(40),
+                    ),
+                    child: Divider(
+                      color: blackColor.withOpacity(0.4),
+                    ),
+                  ),
+                  const _HeaderWidget(),
+                  const _RestaurantListWidget(),
+                ],
               ),
             ),
-            const _HeaderWidget(),
-            const _RestaurantListWidget(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -164,8 +190,9 @@ class _RestaurantListWidget extends StatelessWidget {
         }
 
         if (restaurantProv.restaurants!.isEmpty) {
-          return const IdleNoItemCenter(
+          return IdleNoItemCenter(
             title: "Restaurant not found",
+            iconPathSVG: Assets.images.illustrationNotfound.path,
           );
         }
 
