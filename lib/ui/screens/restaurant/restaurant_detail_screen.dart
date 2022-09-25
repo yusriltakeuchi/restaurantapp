@@ -253,6 +253,7 @@ class _RestaurantDetailReviewWidgetState
         ),
       );
       reviewController.clear();
+      FocusManager.instance.primaryFocus?.unfocus();
     }
   }
 
