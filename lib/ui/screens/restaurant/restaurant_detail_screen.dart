@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+
+import 'package:restaurantapp/core/models/category/category_model.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
+import 'package:restaurantapp/core/models/review/review_model.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
@@ -10,6 +13,7 @@ import 'package:restaurantapp/gen/fonts.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
+import 'package:restaurantapp/ui/widgets/review/review_item.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
   final String id;
@@ -24,7 +28,6 @@ class RestaurantDetailScreen extends StatelessWidget {
       child: Scaffold(
         body: Consumer<RestaurantProvider>(
           builder: (context, restaurantProv, _) {
-
             if (restaurantProv.restaurant == null && !restaurantProv.onSearch) {
               restaurantProv.getRestaurant(id);
               return const IdleLoadingCenter();
@@ -177,9 +180,114 @@ class RestaurantDetailContentBody extends StatelessWidget {
           ),
           _RestaurantDetailMenuWidget(
             restaurant: restaurant,
+          ),
+          _RestaurantDetailReviewWidget(
+            reviews: restaurant.reviews,
           )
         ],
       ),
+    );
+  }
+}
+
+class _RestaurantDetailReviewWidget extends StatelessWidget {
+  final List<ReviewModel>? reviews;
+  const _RestaurantDetailReviewWidget({
+    Key? key,
+    required this.reviews,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: setWidth(40),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Review",
+            style: styleTitle.copyWith(
+              fontSize: setFontSize(38),
+            ),
+          ),
+          SizedBox(
+            height: setHeight(20),
+          ),
+          reviews!.isEmpty
+            ? IdleNoItemCenter(
+                title: "No review",
+                iconPathSVG: Assets.images.illustrationNotfound.path,
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: reviews!.length,
+                padding: EdgeInsets.zero,
+                itemBuilder: (context, index) {
+
+                  final review = reviews?[index];
+                  return ReviewItem(
+                    review: review!
+                  );
+                },
+              )
+        ],
+      ),
+    );
+  }
+}
+
+class _RestaurantDetailCategoryWidget extends StatelessWidget {
+  final List<CategoryModel>? categories;
+  const _RestaurantDetailCategoryWidget({
+    Key? key,
+    required this.categories,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _menuItems(
+      title: "Category",
+      iconPath: Assets.icons.iconFood.path,
+      items: categories != null ? categories!.map((e) => e.name).toList() : [],
+    );
+  }
+
+  Widget _menuItems({
+    required String title,
+    required String iconPath,
+    required List<String> items,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: styleTitle.copyWith(
+            fontSize: setFontSize(35),
+          ),
+        ),
+        SizedBox(
+          height: setHeight(10),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: items
+                .asMap()
+                .map((index, value) => MapEntry(
+                    index,
+                    ChipItem(
+                      name: value,
+                      isFirst: false,
+                      onClick: () {},
+                    )))
+                .values
+                .toList(),
+          ),
+        )
+      ],
     );
   }
 }
@@ -218,8 +326,8 @@ class _RestaurantDetailMenuWidget extends StatelessWidget {
             title: "Foods",
             iconPath: Assets.icons.iconFood.path,
             items: restaurant.menus != null
-              ? restaurant.menus!.foods.map((e) => e.name).toList()
-              : [],
+                ? restaurant.menus!.foods.map((e) => e.name).toList()
+                : [],
           ),
           SizedBox(
             height: setHeight(20),
@@ -228,8 +336,8 @@ class _RestaurantDetailMenuWidget extends StatelessWidget {
             title: "Drinks",
             iconPath: Assets.icons.iconDrink.path,
             items: restaurant.menus != null
-              ? restaurant.menus!.drinks.map((e) => e.name).toList()
-              : [],
+                ? restaurant.menus!.drinks.map((e) => e.name).toList()
+                : [],
           )
         ],
       ),
@@ -404,6 +512,12 @@ class _RestaurantDetailInfoWidgetState
             child: Divider(
               color: blackColor.withOpacity(0.5),
             ),
+          ),
+          _RestaurantDetailCategoryWidget(
+            categories: widget.restaurant.categories,
+          ),
+          SizedBox(
+            height: setHeight(10),
           ),
           Text(
             "Description",
