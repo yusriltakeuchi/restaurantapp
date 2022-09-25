@@ -135,7 +135,7 @@ class RestaurantProvider extends ChangeNotifier {
     try {
       final result = await restaurantService.getRestaurants();
       if (result.error == false) {
-        _cities = result.data?.map((e) => e.city).toList();
+        _cities = result.data?.map((e) => e.city).toList().toSet().toList();
       } else {
         _cities = [];
       }
