@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 class SearchItem extends StatelessWidget {
-  final Function(String) onChange;
+  final Function(String)? onChange;
+  final Function(String)? onSubmit;
   final TextEditingController controller;
   final bool readOnly;
   final bool autoFocus;
   const SearchItem({
     Key? key,
     required this.controller,
-    required this.onChange,
+    this.onChange,
+    this.onSubmit,
     this.readOnly = false,
     required this.autoFocus,
   }) : super(key: key);
@@ -45,7 +47,8 @@ class SearchItem extends StatelessWidget {
                   color: Colors.black54,
                   fontWeight: FontWeight.w600,
                 ),
-                onChanged: (value) => onChange(value) ?? {},
+                onChanged: (value) => onChange != null ? onChange!(value) : {},
+                onSubmitted: (value) => onSubmit != null ? onSubmit!(value) : {},
                 decoration: const InputDecoration(
                   hintText: "Find Restaurant",
                   border: InputBorder.none,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/ui/router/route_list.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_cities_screen.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_detail_screen.dart';
@@ -43,10 +42,10 @@ class RouterGenerator {
         }
         break;
       case routeRestaurantDetail:
-        if (args is RestaurantModel) {
+        if (args is String) {
           return MaterialPageRoute(
             builder: (_) => RestaurantDetailScreen(
-              restaurant: args,
+              id: args,
             ),
             settings: const RouteSettings(name: routeRestaurantDetail),
           );

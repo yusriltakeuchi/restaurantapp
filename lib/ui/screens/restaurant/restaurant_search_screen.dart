@@ -54,7 +54,7 @@ class _RestaurantInitSearchScreenState
     return SearchItem(
       controller: searchController,
       autoFocus: true,
-      onChange: (value) => RestaurantProvider.instance(context).search(value),
+      onSubmit: (value) => RestaurantProvider.instance(context).search(value),
     );
   }
 }
@@ -103,7 +103,7 @@ class RestaurantSearchBody extends StatelessWidget {
                   restaurant: restaurant,
                   onClick: () => navigate.pushTo(
                     routeRestaurantDetail,
-                    data: restaurant,
+                    data: restaurant.id,
                   ),
                 ),
               ],

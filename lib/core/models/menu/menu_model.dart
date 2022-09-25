@@ -1,6 +1,7 @@
+import 'package:restaurantapp/core/models/api/api_result_model.dart';
 import 'package:restaurantapp/core/models/menu/menu_detail_model.dart';
 
-class MenuModel {
+class MenuModel extends Serializable {
   final List<MenuDetailModel> foods;
   final List<MenuDetailModel> drinks;
   MenuModel({
@@ -17,5 +18,13 @@ class MenuModel {
           .map((e) => MenuDetailModel.fromJson(e))
           .toList(),
     );
+  }
+  
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      "foods": foods,
+      "drinks": drinks,
+    };
   }
 }

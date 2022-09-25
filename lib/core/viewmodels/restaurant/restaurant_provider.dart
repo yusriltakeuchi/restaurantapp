@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
+import 'package:restaurantapp/core/services/restaurant/restaurant_local_service.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
 import 'package:restaurantapp/injector.dart';
 
@@ -12,6 +13,10 @@ class RestaurantProvider extends ChangeNotifier {
   /// List of restaurants
   List<RestaurantModel>? _restaurants;
   List<RestaurantModel>? get restaurants => _restaurants;
+
+  /// Detail of restaurant
+  RestaurantModel? _restaurant;
+  RestaurantModel? get restaurant => _restaurant;
 
   /// List of search result restaurants
   List<RestaurantModel>? _searchRestaurants;
@@ -33,6 +38,7 @@ class RestaurantProvider extends ChangeNotifier {
   bool get onSearch => _onSearch;
 
   /// Dependency injection
+  final restaurantLocalService = locator<RestaurantLocalService>();
   final restaurantService = locator<RestaurantService>();
 
   ///=========================
@@ -43,15 +49,40 @@ class RestaurantProvider extends ChangeNotifier {
   static RestaurantProvider instance(BuildContext context)
   => Provider.of(context, listen: false);
   
-  /// Finding list of restaurant from local assets
+  /// Finding list of restaurant from API
   Future<void> getRestaurants() async {
     await Future.delayed(const Duration(milliseconds: 100));
     setOnSearch(true);
     try {
-      _restaurants = await restaurantService.getRestaurants();
-    } catch(e) {
+      final result = await restaurantService.getRestaurants();
+      if (result.error == false) {
+        _restaurants = result.data;
+      } else {
+        _restaurants = [];
+      }
+    } catch(e, stacktrace) {
       debugPrint("Error: ${e.toString()}");
+      debugPrint("Stacktrace: ${stacktrace.toString()}");
       _restaurants = [];
+    } 
+    setOnSearch(false);
+  }
+
+  /// Get detail of restaurant
+  void getRestaurant(String id) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    setOnSearch(true);
+    try {
+      final result = await restaurantService.getRestaurant(id);
+      if (result.error == false) {
+        _restaurant = result.data;
+      } else {
+        _restaurant = RestaurantModel.failure();
+      }
+    } catch(e, stacktrace) {
+      debugPrint("Error: ${e.toString()}");
+      debugPrint("Stacktrace: ${stacktrace.toString()}");
+      _restaurant = RestaurantModel.failure();
     } 
     setOnSearch(false);
   }
@@ -64,11 +95,13 @@ class RestaurantProvider extends ChangeNotifier {
     } else {
       await Future.delayed(const Duration(milliseconds: 100));
       setOnSearch(true);
-      if (_restaurants == null) {
-        await getRestaurants();
-      }
       try {
-        _searchRestaurants = _restaurants!.where((item) => item.name.toLowerCase().contains(keyword.toLowerCase())).toList();
+        final result = await restaurantService.searchRestaurants(keyword);
+        if (result.error == false) {
+          _searchRestaurants = result.data;
+        } else {
+          _searchRestaurants = [];
+        }
       } catch(e) {
         debugPrint("Error: ${e.toString()}");
         _searchRestaurants = [];
@@ -98,7 +131,12 @@ class RestaurantProvider extends ChangeNotifier {
     await Future.delayed(const Duration(milliseconds: 100));
     setOnSearch(true);
     try {
-      _cities = await restaurantService.getCities();
+      final result = await restaurantService.getRestaurants();
+      if (result.error == false) {
+        _cities = result.data?.map((e) => e.city).toList();
+      } else {
+        _cities = [];
+      }
     } catch(e) {
       debugPrint("Error: ${e.toString()}");
       _cities = [];

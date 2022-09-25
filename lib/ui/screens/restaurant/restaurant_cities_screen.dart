@@ -80,7 +80,7 @@ class RestaurantCitiesBody extends StatelessWidget {
               restaurant: restaurant,
               onClick: () => navigate.pushTo(
                 routeRestaurantDetail,
-                data: restaurant,
+                data: restaurant.id,
               ),
             );
           },

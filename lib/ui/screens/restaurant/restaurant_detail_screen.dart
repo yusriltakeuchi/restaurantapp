@@ -1,24 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/gen/fonts.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
+import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
 
 class RestaurantDetailScreen extends StatelessWidget {
-  final RestaurantModel restaurant;
+  final String id;
   const RestaurantDetailScreen({
     Key? key,
-    required this.restaurant,
+    required this.id,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: RestaurantDetailSliverBody(
-        restaurant: restaurant,
+    return ChangeNotifierProvider(
+      create: (context) => RestaurantProvider(),
+      child: Scaffold(
+        body: Consumer<RestaurantProvider>(
+          builder: (context, restaurantProv, _) {
+
+            if (restaurantProv.restaurant == null && !restaurantProv.onSearch) {
+              restaurantProv.getRestaurant(id);
+              return const IdleLoadingCenter();
+            }
+
+            if (restaurantProv.restaurant == null && restaurantProv.onSearch) {
+              return const IdleLoadingCenter();
+            }
+
+            if (restaurantProv.restaurant!.id.isEmpty) {
+              return IdleNoItemCenter(
+                title: "Restaurant not found",
+                iconPathSVG: Assets.images.illustrationNotfound.path,
+              );
+            }
+
+            return RestaurantDetailSliverBody(
+              restaurant: restaurantProv.restaurant!,
+            );
+          },
+        ),
       ),
     );
   }
@@ -97,7 +124,7 @@ class RestaurantDetailSliverBody extends StatelessWidget {
             child: Hero(
               tag: restaurant.id,
               child: Image.network(
-                restaurant.pictureUrl,
+                restaurant.image?.mediumResolution ?? "",
                 fit: BoxFit.cover,
               ),
             ),
@@ -190,7 +217,9 @@ class _RestaurantDetailMenuWidget extends StatelessWidget {
           _menuItems(
             title: "Foods",
             iconPath: Assets.icons.iconFood.path,
-            items: restaurant.menus.foods.map((e) => e.name).toList(),
+            items: restaurant.menus != null
+              ? restaurant.menus!.foods.map((e) => e.name).toList()
+              : [],
           ),
           SizedBox(
             height: setHeight(20),
@@ -198,7 +227,9 @@ class _RestaurantDetailMenuWidget extends StatelessWidget {
           _menuItems(
             title: "Drinks",
             iconPath: Assets.icons.iconDrink.path,
-            items: restaurant.menus.drinks.map((e) => e.name).toList(),
+            items: restaurant.menus != null
+              ? restaurant.menus!.drinks.map((e) => e.name).toList()
+              : [],
           )
         ],
       ),

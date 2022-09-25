@@ -30,12 +30,14 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.2
+  dio: ^4.0.6
   flutter:
     sdk: flutter
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.5.4
   flutter_svg: ^1.1.5
   get_it: ^7.2.0
+  pretty_dio_logger: ^1.1.1
   provider: ^6.0.3
 
 dev_dependencies:
@@ -83,6 +85,5 @@ flutter:
           weight: 300
         - asset: fonts/NunitoSans/NunitoSans-Bold.ttf
           weight: 700
-  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

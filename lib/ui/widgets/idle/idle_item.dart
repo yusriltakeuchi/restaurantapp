@@ -2,6 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 
+class IdleLoadingCenter extends StatelessWidget {
+  const IdleLoadingCenter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: deviceWidth,
+      height: deviceHeight,
+      child: const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
 class IdleNoItemCenter extends StatelessWidget {
   final String? title;
   final Color? color;
