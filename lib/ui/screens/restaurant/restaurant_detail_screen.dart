@@ -494,7 +494,7 @@ class _RestaurantDetailInfoWidgetState
               ),
               Expanded(
                 child: Text(
-                  widget.restaurant.city,
+                  (widget.restaurant.address!.isNotEmpty ? "${widget.restaurant.address}, " : "") + widget.restaurant.city,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: styleSubtitle.copyWith(
