@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             ),
           );
         },
-        initialRoute: routeRestaurant,
+        initialRoute: routeSplash,
         onGenerateRoute: RouterGenerator.generate,
       ),
     );

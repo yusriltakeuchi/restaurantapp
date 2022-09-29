@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
       opacityText = 1;
     });
     await Future.delayed(const Duration(seconds: 2));
-    navigate.pushToRemoveUntil(routeRestaurant);
+    navigate.pushToRemoveUntil(routeDashboard);
   }
 
   @override

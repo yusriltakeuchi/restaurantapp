@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurantapp/ui/router/route_list.dart';
+import 'package:restaurantapp/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_cities_screen.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_detail_screen.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_screen.dart';
@@ -12,6 +13,13 @@ class RouterGenerator {
     /// Declaring argumen route
     final args = settings.arguments;
     switch (settings.name) {
+
+      /// Dashboard group
+      case routeDashboard:
+        return MaterialPageRoute(
+          builder: (_) => const DashboardScreen(),
+          settings: const RouteSettings(name: routeDashboard),
+        );
 
       /// Splash group
       case routeSplash:
