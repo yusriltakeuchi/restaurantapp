@@ -8,6 +8,7 @@ import 'package:restaurantapp/core/models/review/create_review_model.dart';
 import 'package:restaurantapp/core/models/review/review_model.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
+import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/gen/fonts.gen.dart';
@@ -53,16 +54,16 @@ class RestaurantInitDetailScreen extends StatelessWidget {
     return Scaffold(
       body: Consumer2<RestaurantProvider, ConnectionProvider>(
         builder: (context, restaurantProv, connectionProv, _) {
-
           if (connectionProv.internetConnected == false) {
             return IdleNoItemCenter(
-              title: "No internet connection,\nplease check your wifi or mobile data",
+              title:
+                  "No internet connection,\nplease check your wifi or mobile data",
               iconPathSVG: Assets.images.illustrationNoConnection.path,
               buttonText: "Retry Again",
               onClickButton: () => refreshHome(context),
             );
           }
-          
+
           if (restaurantProv.restaurant == null && !restaurantProv.onSearch) {
             restaurantProv.getRestaurant(id);
             return const IdleLoadingCenter();
@@ -190,6 +191,54 @@ class RestaurantDetailSliverBody extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            bottom: 10,
+            right: 30,
+            child: Consumer<FavoriteProvider>(
+              builder: (context, favoriteProv, _) {
+                bool isFavorite = favoriteProv.isFavorite(restaurant.id);
+                return Container(
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 5,
+                        spreadRadius: 2,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: InkWell(
+                    onTap: () => favoriteProv.toggleFavorite(restaurant.id),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: setWidth(30),
+                        vertical: setHeight(30),
+                      ),
+                      child: AnimatedCrossFade(
+                        firstChild: Icon(
+                          Icons.favorite,
+                          color: primaryColor,
+                          size: 20,
+                        ),
+                        secondChild: Icon(
+                          Icons.favorite_border,
+                          color: primaryColor,
+                          size: 20,
+                        ),
+                        crossFadeState: isFavorite
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
+                        duration: const Duration(milliseconds: 200),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          )
         ],
       ),
     );

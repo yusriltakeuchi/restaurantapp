@@ -38,7 +38,7 @@ class FavoriteProvider extends ChangeNotifier {
     setOnSearch(false);
   }
 
-  Future<void> addFavorite(String id) async {
+  Future<void> toggleFavorite(String id) async {
     if (isFavorite(id) == false) {
       favoriteUtils.addFavorite(id);
     } else {
@@ -47,11 +47,6 @@ class FavoriteProvider extends ChangeNotifier {
     getFavorites();
   }
 
-  void removeFavorite(String id) {
-    favoriteUtils.removeFavorite(id);
-    getFavorites();
-  }
-  
   bool isFavorite(String id) => _favorites!.contains(id);
   
   /// Set event search

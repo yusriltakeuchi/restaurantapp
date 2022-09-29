@@ -219,7 +219,7 @@ class _RestaurantListWidget extends StatelessWidget {
                 routeRestaurantDetail,
                 data: restaurant.id,
               ),
-              onClickFavorite: () => favoriteProv.addFavorite(restaurant.id),
+              onClickFavorite: () => favoriteProv.toggleFavorite(restaurant.id),
               isFavorite: favoriteProv.isFavorite(restaurant.id),
             );
           },

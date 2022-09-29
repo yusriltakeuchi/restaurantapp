@@ -2,7 +2,7 @@
 import 'package:restaurantapp/core/utils/global/shared_manager.dart';
 
 class FavoriteUtils {
-  final _key = "favoritesz";
+  final _key = "favorites";
 
   Future<List<String>> getFavorits() async {
     final shared = SharedManager<List<String>>();

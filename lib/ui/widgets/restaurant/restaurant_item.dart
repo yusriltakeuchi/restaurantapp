@@ -159,7 +159,7 @@ class RestaurantItem extends StatelessWidget {
                   crossFadeState: isFavorite
                       ? CrossFadeState.showFirst
                       : CrossFadeState.showSecond,
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 200),
                 ),
               ),
             )
