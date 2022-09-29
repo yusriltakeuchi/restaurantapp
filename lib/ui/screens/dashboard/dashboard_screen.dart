@@ -1,10 +1,14 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurantapp/core/utils/background/backgorund_service_utils.dart';
+import 'package:restaurantapp/core/utils/notification/notification_utils.dart';
 import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
+import 'package:restaurantapp/injector.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
 import 'package:restaurantapp/ui/screens/favorite/favorite_screen.dart';
 import 'package:restaurantapp/ui/screens/restaurant/restaurant_screen.dart';
+import 'package:restaurantapp/ui/screens/setting/setting_screen.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -19,16 +23,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<Widget> menuList = [
     const RestaurantScreen(),
     const FavoriteScreen(),
-    const RestaurantScreen(),
+    const SettingScreen(),
   ];
+  final _bgService = locator<BackgroundServiceUtils>();
+  final notificationUtils = locator<NotificationUtils>();
+
+  @override
+  void initState() {
+    super.initState();
+    port.listen((_) async => await _bgService.someTask());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: _bottomNavBar(),
       body: Consumer<FavoriteProvider>(
         builder: (context, favoriteProv, _) {
-
-          if (favoriteProv.favorites == null && favoriteProv.onSearch == false) {
+          if (favoriteProv.favorites == null &&
+              favoriteProv.onSearch == false) {
             favoriteProv.getFavorites();
             return const IdleLoadingCenter();
           }
@@ -43,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return CustomNavigationBar(
       iconSize: 25,
       selectedColor: primaryColor,
-      unSelectedColor: grayColor,
+      unSelectedColor: grayColor.withOpacity(0.4),
       strokeColor: primaryColor,
       backgroundColor: Colors.white,
       borderRadius: const Radius.circular(15),
@@ -61,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           badgeCount: 0,
           showBadge: false,
           title: Text(
-            "Restoran",
+            "Restaurant",
             style: styleSubtitle,
           ),
         ),
@@ -79,7 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           badgeCount: 0,
           showBadge: false,
           title: Text(
-            "Settings",
+            "Setting",
             style: styleSubtitle,
           ),
         ),

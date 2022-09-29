@@ -36,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    setStatusBar();
     return Scaffold(
       body: Center(
         child: Column(
