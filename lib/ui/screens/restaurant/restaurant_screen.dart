@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
+import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
@@ -37,7 +38,17 @@ class RestaurantScreen extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (context) => RestaurantProvider(),
-        child: const RestaurantBody(),
+        child: Consumer<FavoriteProvider>(
+          builder: (context, favoriteProv, _) {
+
+            if (favoriteProv.favorites == null && favoriteProv.onSearch == false) {
+              favoriteProv.getFavorites();
+              return const IdleLoadingCenter();
+            }
+
+            return const RestaurantBody();
+          },
+        ),
       ),
     );
   }
@@ -178,8 +189,8 @@ class _RestaurantListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RestaurantProvider>(
-      builder: (context, restaurantProv, _) {
+    return Consumer2<RestaurantProvider, FavoriteProvider>(
+      builder: (context, restaurantProv, favoriteProv, _) {
         if (restaurantProv.restaurants == null && !restaurantProv.onSearch) {
           restaurantProv.getRestaurants();
           return const LoadingListView();
@@ -208,6 +219,8 @@ class _RestaurantListWidget extends StatelessWidget {
                 routeRestaurantDetail,
                 data: restaurant.id,
               ),
+              onClickFavorite: () => favoriteProv.addFavorite(restaurant.id),
+              isFavorite: favoriteProv.isFavorite(restaurant.id),
             );
           },
         );

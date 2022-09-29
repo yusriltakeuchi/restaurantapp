@@ -4,6 +4,8 @@ import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/core/models/review/create_review_model.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_local_service.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
+import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
+import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
 import 'package:restaurantapp/injector.dart';
 import 'package:restaurantapp/ui/widgets/dialog/snackbar_item.dart';
 
@@ -61,8 +63,11 @@ class RestaurantProvider extends ChangeNotifier {
     setOnSearch(true);
     try {
       final result = await restaurantService.getRestaurants();
+      final favoriteProv = FavoriteProvider.instance(navigate.navigatorKey.currentContext!);
       if (result.error == false) {
         _restaurants = result.data;
+        /// Validating favorite state
+        _restaurants?.map((e) async => e.isFavorite = favoriteProv.isFavorite(e.id)).toList();
       } else {
         _restaurants = [];
       }
@@ -80,8 +85,11 @@ class RestaurantProvider extends ChangeNotifier {
     setOnSearch(true);
     try {
       final result = await restaurantService.getRestaurant(id);
+      final favoriteProv = FavoriteProvider.instance(navigate.navigatorKey.currentContext!);
       if (result.error == false) {
         _restaurant = result.data;
+        /// Validating favorite state
+        _restaurant?.isFavorite = favoriteProv.isFavorite(_restaurant!.id);
       } else {
         _restaurant = RestaurantModel.failure();
       }

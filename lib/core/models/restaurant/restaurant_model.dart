@@ -14,6 +14,7 @@ class RestaurantModel extends Serializable {
   final RestaurantImageModel? image;
   final List<CategoryModel>? categories;
   List<ReviewModel>? reviews;
+  bool? isFavorite;
   
   RestaurantModel({
     required this.id,
@@ -25,7 +26,8 @@ class RestaurantModel extends Serializable {
     this.menus,
     this.image,
     this.categories,
-    this.reviews
+    this.reviews,
+    this.isFavorite = false
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
