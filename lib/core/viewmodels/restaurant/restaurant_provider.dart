@@ -30,6 +30,10 @@ class RestaurantProvider extends ChangeNotifier {
   List<RestaurantModel>? _restaurantsByCity;
   List<RestaurantModel>? get restaurantsByCity => _restaurantsByCity;
 
+  /// List of favorites restaurant
+  List<RestaurantModel>? _restaurantFavorites;
+  List<RestaurantModel>? get restaurantFavorites => _restaurantFavorites;
+
   /// Save latest keyword
   String? _latestKeyword;
   String? get latestKeyword => _latestKeyword;
@@ -76,6 +80,25 @@ class RestaurantProvider extends ChangeNotifier {
       debugPrint("Stacktrace: ${stacktrace.toString()}");
       _restaurants = [];
     } 
+    setOnSearch(false);
+  }
+
+  void getRestaurantFavorites(List<String> favoritesId) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    setOnSearch(true);
+    try {
+      if (_restaurants == null) {
+        await getRestaurants();
+      }
+      _restaurantFavorites = [];
+      for (var item in _restaurants!) {
+        if (favoritesId.contains(item.id)) {
+          _restaurantFavorites!.add(item);
+        }
+      }
+    } catch(e) {
+      _restaurantFavorites = [];
+    }
     setOnSearch(false);
   }
 
@@ -178,6 +201,11 @@ class RestaurantProvider extends ChangeNotifier {
         isError: true
       );
     } 
+  }
+
+  void removeFavorite(String id) {
+    _restaurantFavorites?.removeWhere((item) => item.id == id);
+    notifyListeners();
   }
 
   void clearRestaurants() {

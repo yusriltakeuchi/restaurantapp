@@ -38,17 +38,7 @@ class RestaurantScreen extends StatelessWidget {
       ),
       body: ChangeNotifierProvider(
         create: (context) => RestaurantProvider(),
-        child: Consumer<FavoriteProvider>(
-          builder: (context, favoriteProv, _) {
-
-            if (favoriteProv.favorites == null && favoriteProv.onSearch == false) {
-              favoriteProv.getFavorites();
-              return const IdleLoadingCenter();
-            }
-
-            return const RestaurantBody();
-          },
-        ),
+        child: const RestaurantBody(),
       ),
     );
   }

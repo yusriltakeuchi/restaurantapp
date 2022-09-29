@@ -14,7 +14,7 @@ class RestaurantModel extends Serializable {
   final RestaurantImageModel? image;
   final List<CategoryModel>? categories;
   List<ReviewModel>? reviews;
-  bool? isFavorite;
+  bool isFavorite;
   
   RestaurantModel({
     required this.id,

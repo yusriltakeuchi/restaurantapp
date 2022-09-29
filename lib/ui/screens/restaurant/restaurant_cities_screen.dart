@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
+import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
@@ -60,8 +61,8 @@ class RestaurantCitiesBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RestaurantProvider, ConnectionProvider>(
-      builder: (context, restaurantProv, connectionProv, _) {
+    return Consumer3<RestaurantProvider, ConnectionProvider, FavoriteProvider>(
+      builder: (context, restaurantProv, connectionProv, favoriteProv, _) {
 
         if (connectionProv.internetConnected == false) {
           return IdleNoItemCenter(
@@ -101,6 +102,8 @@ class RestaurantCitiesBody extends StatelessWidget {
                 routeRestaurantDetail,
                 data: restaurant.id,
               ),
+              onClickFavorite: () => favoriteProv.toggleFavorite(restaurant.id),
+              isFavorite: favoriteProv.isFavorite(restaurant.id),
             );
           },
         );
