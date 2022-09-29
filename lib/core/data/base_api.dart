@@ -58,7 +58,9 @@ class BaseAPI implements BaseAPIImpl {
       if (e.error is SocketException) {
         ConnectionProvider.instance(navigate.navigatorKey.currentContext!).setConnection(false);
       } else {
-        ConnectionProvider.instance(navigate.navigatorKey.currentContext!).setConnection(true);
+        if (Platform.environment.containsKey('FLUTTER_TEST') == false) {
+          ConnectionProvider.instance(navigate.navigatorKey.currentContext!).setConnection(true);
+        }
       }
       return APIResponse.failure(e.response?.statusCode ?? 500);
     }

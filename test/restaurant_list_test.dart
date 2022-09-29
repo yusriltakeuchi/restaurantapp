@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
 import 'package:restaurantapp/injector.dart';
-
 void main() {
   RestaurantService? restaurantService;
   /// Setup injector
@@ -11,15 +11,14 @@ void main() {
   });
 
   group("Fetching Restaurants", () {
-    test("should return list of restaurants", () async {
+    test("Should return data with class RestaurantModel", () async {
       final result = await restaurantService!.getRestaurants();
-      expect(result.data?.length, greaterThanOrEqualTo(1));
+      expect(result.data?.first.runtimeType, equals(RestaurantModel));
     });
 
-    test("should contains restaurant named 'Ampiran Kota'", () async {
+    test("Should return list of restaurants", () async {
       final result = await restaurantService!.getRestaurants();
-      const restaurantName = "Ampiran Kota";
-      expect(result.data?.any((item) => item.name == restaurantName), true);
+      expect(result.data?.length, greaterThanOrEqualTo(1));
     });
   });
 }

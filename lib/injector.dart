@@ -15,8 +15,12 @@ GetIt locator = GetIt.instance;
 Future<void> setupLocator() async {
 
   /// Registering api
-  locator.registerSingleton(Api());
-  locator.registerSingleton(BaseAPI());
+  if (locator.isRegistered(instance: Api()) == false) {
+    locator.registerSingleton(Api());
+  }
+  if (locator.isRegistered(instance: BaseAPI()) == false) {
+    locator.registerSingleton(BaseAPI());
+  }
 
   /// Registering utils
   locator.registerSingleton(NavigationUtils());

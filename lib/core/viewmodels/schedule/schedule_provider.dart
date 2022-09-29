@@ -46,6 +46,7 @@ class ScheduleProvider extends ChangeNotifier {
         startAt: DateTimeFormat.format(),
         exact: true,
         wakeup: true,
+        allowWhileIdle: true,
       );
     } else {
       await AndroidAlarmManager.cancel(1);
