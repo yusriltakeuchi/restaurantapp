@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/viewmodels/schedule/schedule_provider.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
+import 'package:restaurantapp/ui/widgets/dialog/snackbar_item.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -59,8 +62,16 @@ class _SettingBodyState extends State<SettingBody> {
                 title: "Restaurant Notification",
                 description: "Enable push notification",
                 value: scheduleProv.isScheduled,
-                onChange: (value) =>
-                    ScheduleProvider.instance(context).setSchedule(value),
+                onChange: (value) {
+                  if (Platform.isAndroid) {
+                    ScheduleProvider.instance(context).setSchedule(value);
+                  } else {
+                    showSnackbar(
+                      title: "This feature only for Android Devices",
+                      color: primaryColor
+                    );
+                  }
+                }
               )
             ],
           );

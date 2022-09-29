@@ -126,6 +126,7 @@ class RestaurantProvider extends ChangeNotifier {
 
   /// Search restaurant by keywords
   void search(String keyword) async {
+    _searchRestaurants = null;
     if (keyword.isEmpty) {
       _searchRestaurants = null;
       setOnSearch(false);
