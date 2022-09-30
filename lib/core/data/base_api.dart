@@ -14,10 +14,10 @@ class BaseAPI implements BaseAPIImpl {
   final endpoint = locator<Api>();
 
   /// Initialize constructors
-  BaseAPI() {
-    _dio = Dio();
+  BaseAPI({Dio? dio}) {
+    _dio = dio ?? Dio();
   }
-  Options _getHeaders({bool? useToken}) {
+  Options getHeaders({bool? useToken}) {
     var header = <String, dynamic>{};
     header['Accept'] = 'application/json';
     header['Content-Type'] = 'application/json';
@@ -36,7 +36,7 @@ class BaseAPI implements BaseAPIImpl {
     try {
       final result = await _dio?.delete(
         url,
-        options: _getHeaders(useToken: useToken),
+        options: getHeaders(useToken: useToken),
         queryParameters: param
       );
       return _parseResponse(result);
@@ -50,7 +50,7 @@ class BaseAPI implements BaseAPIImpl {
     try {
       final result = await _dio?.get(
         url,
-        options: _getHeaders(useToken: useToken),
+        options: getHeaders(useToken: useToken),
         queryParameters: param
       );
       return _parseResponse(result);
@@ -71,7 +71,7 @@ class BaseAPI implements BaseAPIImpl {
     try {
       final result = await _dio?.post(
         url,
-        options: _getHeaders(useToken: useToken),
+        options: getHeaders(useToken: useToken),
         data: data,
         queryParameters: param
       );
@@ -86,7 +86,7 @@ class BaseAPI implements BaseAPIImpl {
     try {
       final result = await _dio?.put(
         url,
-        options: _getHeaders(useToken: useToken),
+        options: getHeaders(useToken: useToken),
         data: data,
         queryParameters: param
       );
