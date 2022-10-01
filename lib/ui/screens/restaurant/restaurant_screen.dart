@@ -58,10 +58,10 @@ class RestaurantBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ConnectionProvider>(
       builder: (context, connectionProv, _) {
-
         if (connectionProv.internetConnected == false) {
           return IdleNoItemCenter(
-            title: "No internet connection,\nplease check your wifi or mobile data",
+            title:
+                "No internet connection,\nplease check your wifi or mobile data",
             iconPathSVG: Assets.images.illustrationNoConnection.path,
             buttonText: "Retry Again",
             onClickButton: () => refreshHome(context),
