@@ -8,12 +8,14 @@ class RestaurantItem extends StatelessWidget {
   final VoidCallback onClick;
   final VoidCallback? onClickFavorite;
   final bool isFavorite;
+  final bool useHero;
   const RestaurantItem({
     Key? key,
     required this.restaurant,
     required this.onClick,
     this.onClickFavorite,
     this.isFavorite = false,
+    this.useHero = true
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -31,24 +33,12 @@ class RestaurantItem extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  Hero(
-                    tag: restaurant.id,
-                    child: Container(
-                      width: setWidth(200),
-                      height: setHeight(
-                        isSmallPhoneHeight(context) ? 180 : 150,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            restaurant.image?.mediumResolution ?? "",
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
+                  useHero
+                    ? Hero(
+                        tag: restaurant.id,
+                        child: _imageWidget(context),
+                      )
+                    : _imageWidget(context),
                   SizedBox(
                     width: setWidth(20),
                   ),
@@ -164,6 +154,24 @@ class RestaurantItem extends StatelessWidget {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _imageWidget(BuildContext context) {
+    return Container(
+      width: setWidth(200),
+      height: setHeight(
+        isSmallPhoneHeight(context) ? 180 : 150,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        image: DecorationImage(
+          image: NetworkImage(
+            restaurant.image?.mediumResolution ?? "",
+          ),
+          fit: BoxFit.cover,
         ),
       ),
     );

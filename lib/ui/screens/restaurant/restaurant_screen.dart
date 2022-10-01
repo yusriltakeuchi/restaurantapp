@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/connection/connection_provider.dart';
-import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
 import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dart';
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
@@ -11,7 +10,7 @@ import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
 import 'package:restaurantapp/ui/widgets/idle/loading/loading_listview.dart';
 import 'package:restaurantapp/ui/widgets/idle/loading/loading_type_horizontal.dart';
-import 'package:restaurantapp/ui/widgets/restaurant/restaurant_item.dart';
+import 'package:restaurantapp/ui/widgets/restaurant/restaurant_list.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({super.key});
@@ -179,8 +178,8 @@ class _RestaurantListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RestaurantProvider, FavoriteProvider>(
-      builder: (context, restaurantProv, favoriteProv, _) {
+    return Consumer<RestaurantProvider>(
+      builder: (context, restaurantProv, _) {
         if (restaurantProv.restaurants == null && !restaurantProv.onSearch) {
           restaurantProv.getRestaurants();
           return const LoadingListView();
@@ -197,22 +196,8 @@ class _RestaurantListWidget extends StatelessWidget {
           );
         }
 
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: restaurantProv.restaurants!.length,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            final restaurant = restaurantProv.restaurants![index];
-            return RestaurantItem(
-              restaurant: restaurant,
-              onClick: () => navigate.pushTo(
-                routeRestaurantDetail,
-                data: restaurant.id,
-              ),
-              onClickFavorite: () => favoriteProv.toggleFavorite(restaurant.id),
-              isFavorite: favoriteProv.isFavorite(restaurant.id),
-            );
-          },
+        return RestaurantListWidget(
+          restaurants: restaurantProv.restaurants!,
         );
       },
     );
