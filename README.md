@@ -1,16 +1,35 @@
-# restaurantapp
+# Resto Finder
 
-A new Flutter project.
+[![Fork](https://img.shields.io/github/forks/yusriltakeuchi/restaurantapp?style=social)](https://github.com/yusriltakeuchi/restaurantapp/fork)&nbsp; [![Star](https://img.shields.io/github/stars/yusriltakeuchi/restaurantapp?style=social)](https://github.com/yusriltakeuchi/restaurantapp/star)&nbsp; [![Watches](https://img.shields.io/github/watchers/yusriltakeuchi/restaurantapp?style=social)](https://github.com/yusriltakeuchi/restaurantapp/)&nbsp;
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+<p><img  src="https://i.ibb.co/ggHw3m0/Portfolio.png"/></p>
 
-A few resources to get you started if this is your first Flutter project:
+Restaurant App is an application that has the function of displaying a list of restaurants in several famous cities in Indonesia. You can also activate the notification feature which will provide restaurant recommendations at 11 am.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Apps Feature:
+
+- Show List of Restaurants in City
+- Search Restaurants
+- Restaurant Details
+- Show Review and Create Review
+- Favorite Restaurants
+- Reminder Push Notifications
+ 
+
+### SDK Version
+1. Flutter SDK v3.3.3 with null safety support
+ 
+### How to install 
+1. git clone https://github.com/yusriltakeuchi/restaurantapp.git
+2. flutter packages get
+3. flutter run
+
+### How to add new assets?
+Insert your asset to assets folder and run this command in your terminal:
+```dart
+- dart pub global activate flutter_gen
+- chmod +x asset.sh
+- ./asset.sh
+```
