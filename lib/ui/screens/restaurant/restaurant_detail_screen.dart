@@ -13,8 +13,11 @@ import 'package:restaurantapp/core/viewmodels/restaurant/restaurant_provider.dar
 import 'package:restaurantapp/gen/assets.gen.dart';
 import 'package:restaurantapp/gen/fonts.gen.dart';
 import 'package:restaurantapp/ui/constant/constant.dart';
+import 'package:restaurantapp/ui/router/route_list.dart';
 import 'package:restaurantapp/ui/widgets/chip/chip_item.dart';
 import 'package:restaurantapp/ui/widgets/idle/idle_item.dart';
+import 'package:restaurantapp/ui/widgets/restaurant/restaurant_item.dart';
+import 'package:restaurantapp/ui/widgets/restaurant/restaurant_list.dart';
 import 'package:restaurantapp/ui/widgets/review/review_item.dart';
 import 'package:restaurantapp/ui/widgets/textfield/custom_textfield.dart';
 
@@ -80,8 +83,25 @@ class RestaurantInitDetailScreen extends StatelessWidget {
             );
           }
 
+          if (restaurantProv.restaurants == null && !restaurantProv.onSearch) {
+            restaurantProv.getRestaurants();
+            return const IdleLoadingCenter();
+          }
+
+          if (restaurantProv.restaurants == null && restaurantProv.onSearch) {
+            return const IdleLoadingCenter();
+          }
+
+          if (restaurantProv.restaurants!.isEmpty) {
+            return IdleNoItemCenter(
+              title: "Restaurant not found",
+              iconPathSVG: Assets.images.illustrationNotfound.path,
+            );
+          }
+
           return RestaurantDetailSliverBody(
             restaurant: restaurantProv.restaurant!,
+            restaurants: restaurantProv.restaurants!,
           );
         },
       ),
@@ -91,9 +111,12 @@ class RestaurantInitDetailScreen extends StatelessWidget {
 
 class RestaurantDetailSliverBody extends StatelessWidget {
   final RestaurantModel restaurant;
+  final List<RestaurantModel> restaurants;
+
   const RestaurantDetailSliverBody({
     Key? key,
     required this.restaurant,
+    required this.restaurants,
   }) : super(key: key);
 
   @override
@@ -101,6 +124,7 @@ class RestaurantDetailSliverBody extends StatelessWidget {
     return NestedScrollView(
         body: RestaurantDetailContentBody(
           restaurant: restaurant,
+          restaurants: restaurants,
         ),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return <Widget>[
@@ -247,9 +271,12 @@ class RestaurantDetailSliverBody extends StatelessWidget {
 
 class RestaurantDetailContentBody extends StatelessWidget {
   final RestaurantModel restaurant;
+  final List<RestaurantModel> restaurants;
+
   const RestaurantDetailContentBody({
     Key? key,
     required this.restaurant,
+    required this.restaurants,
   }) : super(key: key);
 
   @override
@@ -266,6 +293,10 @@ class RestaurantDetailContentBody extends StatelessWidget {
           ),
           _RestaurantDetailReviewWidget(
             reviews: restaurant.reviews,
+          ),
+          _RestaurantDetailRecommendationsCityWidget(
+            city: restaurant.city,
+            restaurants: restaurants,
           ),
           SizedBox(
             height: deviceHeight * 0.1,
@@ -385,6 +416,50 @@ class _RestaurantDetailReviewWidgetState
                 )
         ],
       ),
+    );
+  }
+}
+
+class _RestaurantDetailRecommendationsCityWidget extends StatelessWidget {
+  final List<RestaurantModel> restaurants;
+  final String city;
+
+  const _RestaurantDetailRecommendationsCityWidget({
+    Key? key,
+    required this.restaurants,
+    required this.city,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: setWidth(40),
+          ),
+          child: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Another Restaurants in $city",
+                    style: styleTitle.copyWith(
+                      fontSize: setFontSize(38),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        RestaurantListWidget(
+          restaurants: restaurants
+              .where((restaurant) => restaurant.city == city)
+              .toList(),
+        ),
+      ],
     );
   }
 }
