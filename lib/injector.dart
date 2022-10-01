@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:restaurantapp/core/data/api.dart';
 import 'package:restaurantapp/core/data/base_api.dart';
-import 'package:restaurantapp/core/services/restaurant/restaurant_local_service.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
 import 'package:restaurantapp/core/utils/background/backgorund_service_utils.dart';
 import 'package:restaurantapp/core/utils/favorite/favorite_utils.dart';
@@ -30,7 +29,6 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton(() => BackgroundServiceUtils());
 
   /// Registering services
-  locator.registerLazySingleton(() => RestaurantLocalService());
   locator.registerLazySingleton(() => RestaurantService(
     locator<BaseAPI>()
   ));

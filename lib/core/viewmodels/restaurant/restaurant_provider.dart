@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurantapp/core/models/restaurant/restaurant_model.dart';
 import 'package:restaurantapp/core/models/review/create_review_model.dart';
-import 'package:restaurantapp/core/services/restaurant/restaurant_local_service.dart';
 import 'package:restaurantapp/core/services/restaurant/restaurant_service.dart';
 import 'package:restaurantapp/core/utils/navigation/navigation_utils.dart';
 import 'package:restaurantapp/core/viewmodels/favorite/favorite_provider.dart';
@@ -50,7 +49,6 @@ class RestaurantProvider extends ChangeNotifier {
   bool get onSearch => _onSearch;
 
   /// Dependency injection
-  final restaurantLocalService = locator<RestaurantLocalService>();
   final restaurantService = locator<RestaurantService>();
 
   ///=========================
