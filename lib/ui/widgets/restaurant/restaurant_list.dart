@@ -23,6 +23,7 @@ class RestaurantListWidget extends StatelessWidget {
     return Consumer<FavoriteProvider>(
       builder: (context, favoriteProv, _) {
         return ListView.builder(
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           itemCount: restaurants.length,
           physics: const NeverScrollableScrollPhysics(),
