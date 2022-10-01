@@ -15,7 +15,7 @@ class RestaurantListWidget extends StatelessWidget {
     super.key,
     required this.restaurants,
     this.useHero = true,
-    this.useReplacement = false
+    this.useReplacement = false,
   });
 
   @override
@@ -33,14 +33,14 @@ class RestaurantListWidget extends StatelessWidget {
               restaurant: restaurant,
               useHero: useHero,
               onClick: () => useReplacement
-                ? navigate.pushToReplacement(
-                    routeRestaurantDetail,
-                    data: restaurant.id,
-                  )
-                : navigate.pushTo(
-                    routeRestaurantDetail,
-                    data: restaurant.id,
-                  ),
+                  ? navigate.pushToReplacement(
+                      routeRestaurantDetail,
+                      data: restaurant.id,
+                    )
+                  : navigate.pushTo(
+                      routeRestaurantDetail,
+                      data: restaurant.id,
+                    ),
               onClickFavorite: () => favoriteProv.toggleFavorite(restaurant.id),
               isFavorite: favoriteProv.isFavorite(restaurant.id),
             );

@@ -58,7 +58,8 @@ class RestaurantInitDetailScreen extends StatelessWidget {
         builder: (context, restaurantProv, connectionProv, _) {
           if (connectionProv.internetConnected == false) {
             return IdleNoItemCenter(
-              title: "No internet connection,\nplease check your wifi or mobile data",
+              title:
+                  "No internet connection,\nplease check your wifi or mobile data",
               iconPathSVG: Assets.images.illustrationNoConnection.path,
               buttonText: "Retry Again",
               onClickButton: () => refreshHome(context),
@@ -272,6 +273,7 @@ class RestaurantDetailContentBody extends StatelessWidget {
           ),
           _RestaurantDetailRecommendationsCityWidget(
             city: restaurant.city,
+            id: restaurant.id,
           ),
           SizedBox(
             height: deviceHeight * 0.1,
@@ -397,10 +399,11 @@ class _RestaurantDetailReviewWidgetState
 
 class _RestaurantDetailRecommendationsCityWidget extends StatelessWidget {
   final String city;
-
+  final String id;
   const _RestaurantDetailRecommendationsCityWidget({
     Key? key,
     required this.city,
+    required this.id,
   }) : super(key: key);
 
   @override
@@ -429,7 +432,8 @@ class _RestaurantDetailRecommendationsCityWidget extends StatelessWidget {
         ),
         Consumer<RestaurantProvider>(
           builder: (context, restaurantProv, _) {
-            if (restaurantProv.restaurants == null && !restaurantProv.onSearch) {
+            if (restaurantProv.restaurants == null &&
+                !restaurantProv.onSearch) {
               restaurantProv.getRestaurants();
               return const LoadingListView();
             }
@@ -446,7 +450,8 @@ class _RestaurantDetailRecommendationsCityWidget extends StatelessWidget {
             }
             return RestaurantListWidget(
               restaurants: restaurantProv.restaurants!
-                  .where((restaurant) => restaurant.city == city)
+                  .where((restaurant) =>
+                      restaurant.city == city && restaurant.id != id)
                   .toList(),
               useHero: false,
               useReplacement: true,
