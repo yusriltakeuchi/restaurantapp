@@ -21,15 +21,19 @@ Restaurant App is an application that has the function of displaying a list of r
 ### SDK Version
 1. Flutter SDK v3.3.3 with null safety support
  
-### How to install 
-1. git clone https://github.com/yusriltakeuchi/restaurantapp.git
-2. flutter packages get
-3. flutter run
+### How to install
+Run this command in your terminal:
+```bash
+git clone https://github.com/yusriltakeuchi/restaurantapp.git
+cd restaurantapp
+flutter packages get
+flutter run
+```
 
 ### How to add new assets?
 Insert your asset to assets folder and run this command in your terminal:
-```dart
-- dart pub global activate flutter_gen
-- chmod +x asset.sh
-- ./asset.sh
+```bash
+dart pub global activate flutter_gen
+chmod +x asset.sh
+./asset.sh
 ```
